@@ -33,17 +33,25 @@ const filterProps = ({
   }
 
   if (mapProps && R.type(mapProps) === 'Object') {
-    R.forEachObjIndexed((fn, key) => {
-      if (isFn(fn)) {
-        const { key: newKey, value: newValue } = fn({
-          key,
-          value: originalProps[key],
+    R.forEachObjIndexed((value, propName) => {
+      if (isFn(value)) {
+        const { propName: newPropName, value: newValue } = value({
+          propName,
+          value: originalProps[propName],
         });
 
-        originalProps[newKey] = newValue;
+        originalProps[newPropName] = newValue;
 
-        if (key !== newKey) {
-          delete originalProps[key];
+        if (propName !== newPropName) {
+          delete originalProps[propName];
+        }
+      } else if (R.type(value) === 'String') {
+        const newPropName = value;
+
+        originalProps[newPropName] = originalProps[propName];
+
+        if (propName !== newPropName) {
+          delete originalProps[propName];
         }
       }
     }, mapProps);
