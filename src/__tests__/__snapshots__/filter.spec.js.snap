@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`filter should work 1`] = `
+<div>
+  <p>
+    I'm Tony Stark
+  </p>
+  <p>
+    My name Steve Rogers
+  </p>
+</div>
+`;
