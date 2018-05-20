@@ -5,32 +5,13 @@ import { DOMProps } from './utils';
 
 const isFn = val => R.equals(R.type(val), 'Function');
 
-const arrayToObject = array =>
-  R.reduce(
-    (result, prop) => {
-      // eslint-disable-next-line no-param-reassign
-      result[prop] = prop;
-
-      return result;
-    },
-    {},
-    array
-  );
-
-const DOMPropsObj = arrayToObject(DOMProps);
-
 const filterProps = ({
   props,
   requiredProps = [],
-  options: { withDOMProps = false, mapProps = null },
+  options: { includeDOMProps = false, mapProps = null },
 }) => {
   const originalProps = R.clone(props);
   const finalProps = {};
-
-  if (R.type(requiredProps) === 'Array' && requiredProps.length !== 0) {
-    // eslint-disable-next-line no-param-reassign
-    requiredProps = arrayToObject(requiredProps);
-  }
 
   if (mapProps && R.type(mapProps) === 'Object') {
     R.forEachObjIndexed((value, propName) => {
@@ -45,7 +26,7 @@ const filterProps = ({
         if (propName !== newPropName) {
           delete originalProps[propName];
         }
-      } else if (R.type(value) === 'String') {
+      } else if (R.type(value) === 'String' && value !== '') {
         const newPropName = value;
 
         originalProps[newPropName] = originalProps[propName];
@@ -58,14 +39,11 @@ const filterProps = ({
   }
 
   R.forEachObjIndexed((value, key) => {
-    if (withDOMProps && DOMPropsObj[key]) {
+    if (
+      (includeDOMProps && R.contains(key, DOMProps)) ||
+      R.contains(key, requiredProps)
+    ) {
       finalProps[key] = value;
-    } else if (requiredProps[key]) {
-      if (isFn(requiredProps[key])) {
-        finalProps[key] = requiredProps[key];
-      } else {
-        finalProps[key] = value;
-      }
     }
   }, originalProps);
 

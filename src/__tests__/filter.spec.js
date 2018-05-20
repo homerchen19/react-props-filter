@@ -4,9 +4,7 @@ import TestRenderer from 'react-test-renderer';
 
 import filter from '../filter';
 
-const IronMan = ({ ironManName, ...rest }) => (
-  <p {...rest}>{`I'm ${ironManName}`}</p>
-);
+const IronMan = ({ ironManName }) => <p>{`I'm ${ironManName}`}</p>;
 IronMan.propTypes = {
   ironManName: PropTypes.string.isRequired,
 };
@@ -44,7 +42,7 @@ describe('filter', () => {
       <Avengers
         ironManName="Tony Stark"
         captainAmericaName="Steve Rogers"
-        hulk="Bruce Banner"
+        hulkName="Bruce Banner"
       />
     );
     const testInstance = testRenderer.root;
@@ -59,12 +57,12 @@ describe('filter', () => {
     });
   });
 
-  it('should work with option withDOMProps', () => {
+  it('should work with option includeDOMProps', () => {
     const Filter = filter({
       ironMan: {
         requiredProps: Object.keys(IronMan.propTypes),
         options: {
-          withDOMProps: true,
+          includeDOMProps: true,
         },
       },
       captainAmerica: {
@@ -89,7 +87,7 @@ describe('filter', () => {
       <Avengers
         ironManName="Tony Stark"
         captainAmericaName="Steve Rogers"
-        hulk="Bruce Banner"
+        hulkName="Bruce Banner"
         onClick={handleClickIromMan}
       />
     );
@@ -98,7 +96,7 @@ describe('filter', () => {
     expect(testInstance.props).toEqual({
       ironManName: 'Tony Stark',
       captainAmericaName: 'Steve Rogers',
-      hulk: 'Bruce Banner',
+      hulkName: 'Bruce Banner',
       onClick: handleClickIromMan,
     });
     expect(testInstance.findByType(IronMan).props).toEqual({
@@ -147,7 +145,7 @@ describe('filter', () => {
       <Avengers
         nameOfIronMan="Tony Stark"
         nameOfCaptainAmerica="Steve Rogers"
-        hulk="Bruce Banner"
+        hulkName="Bruce Banner"
       />
     );
     const testInstance = testRenderer.root;
@@ -155,7 +153,7 @@ describe('filter', () => {
     expect(testInstance.props).toEqual({
       nameOfIronMan: 'Tony Stark',
       nameOfCaptainAmerica: 'Steve Rogers',
-      hulk: 'Bruce Banner',
+      hulkName: 'Bruce Banner',
     });
     expect(testInstance.findByType(IronMan).props).toEqual({
       ironManName: 'Tony Stark !',
