@@ -1,14 +1,14 @@
 import React from 'react';
 import R from 'ramda';
 
-import { DOMProps } from './utils';
+import { DOMProps as allDOMProps } from './utils';
 
 const isFn = val => R.equals(R.type(val), 'Function');
 
 const filterProps = ({
   props,
-  requiredProps = [],
-  options: { includeDOMProps = false, mapProps = null },
+  allowedProps = [],
+  options: { DOMProps = false, mapProps = null },
 }) => {
   const originalProps = R.clone(props);
   const finalProps = {};
@@ -40,8 +40,8 @@ const filterProps = ({
 
   R.forEachObjIndexed((value, key) => {
     if (
-      (includeDOMProps && R.contains(key, DOMProps)) ||
-      R.contains(key, requiredProps)
+      (DOMProps && R.contains(key, allDOMProps)) ||
+      R.contains(key, allowedProps)
     ) {
       finalProps[key] = value;
     }
@@ -51,14 +51,11 @@ const filterProps = ({
 };
 
 export default function filter(mapper) {
-  const mapperKeys = R.keys(mapper);
   const Children = ({ children, ...rest }) =>
     children && isFn(children) && children(rest);
 
-  Children.displayName = 'Filter';
-
-  const reducer = (Component, key) => {
-    const { requiredProps, options } = mapper[key];
+  const reducer = (Component, key, index) => {
+    const { allowedProps, options } = mapper[key];
 
     // eslint-disable-next-line react/prop-types
     const NewComponent = ({ children, ...rest }) => (
@@ -66,20 +63,30 @@ export default function filter(mapper) {
         {props => {
           const propsToPass = filterProps({
             props: rest,
-            requiredProps,
+            allowedProps,
             options: options || {},
           });
 
-          return children({
-            ...props,
-            [key]: propsToPass,
-          });
+          return children(
+            index === 0
+              ? {
+                  all: { ...rest },
+                  [key]: propsToPass,
+                }
+              : {
+                  ...props,
+                  all: { ...rest },
+                  [key]: propsToPass,
+                }
+          );
         }}
       </Component>
     );
 
+    NewComponent.displayName = 'PropsFilter';
+
     return NewComponent;
   };
 
-  return R.reduce(reducer, Children, mapperKeys);
+  return R.keys(mapper).reduce(reducer, Children);
 }

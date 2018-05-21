@@ -20,10 +20,10 @@ describe('filter', () => {
   it('should work', () => {
     const Filter = filter({
       ironMan: {
-        requiredProps: Object.keys(IronMan.propTypes),
+        allowedProps: Object.keys(IronMan.propTypes),
       },
       captainAmerica: {
-        requiredProps: Object.keys(CamptainAmerica.propTypes),
+        allowedProps: Object.keys(CamptainAmerica.propTypes),
       },
     });
 
@@ -57,16 +57,16 @@ describe('filter', () => {
     });
   });
 
-  it('should work with option includeDOMProps', () => {
+  it('should work with option DOMProps', () => {
     const Filter = filter({
       ironMan: {
-        requiredProps: Object.keys(IronMan.propTypes),
+        allowedProps: Object.keys(IronMan.propTypes),
         options: {
-          includeDOMProps: true,
+          DOMProps: true,
         },
       },
       captainAmerica: {
-        requiredProps: Object.keys(CamptainAmerica.propTypes),
+        allowedProps: Object.keys(CamptainAmerica.propTypes),
       },
     });
 
@@ -111,7 +111,7 @@ describe('filter', () => {
   it('should work with option mapProps', () => {
     const Filter = filter({
       ironMan: {
-        requiredProps: Object.keys(IronMan.propTypes),
+        allowedProps: Object.keys(IronMan.propTypes),
         options: {
           mapProps: {
             nameOfIronMan: ({ value }) => ({
@@ -122,7 +122,7 @@ describe('filter', () => {
         },
       },
       captainAmerica: {
-        requiredProps: Object.keys(CamptainAmerica.propTypes),
+        allowedProps: Object.keys(CamptainAmerica.propTypes),
         options: {
           mapProps: {
             nameOfCaptainAmerica: 'captainAmericaName',
