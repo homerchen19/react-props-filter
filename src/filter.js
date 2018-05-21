@@ -8,7 +8,8 @@ const isFn = val => R.equals(R.type(val), 'Function');
 const filterProps = ({
   props,
   allowedProps = [],
-  options: { DOMProps = false, mapProps = null },
+  mapProps = null,
+  options: { DOMProps = false },
 }) => {
   const originalProps = R.clone(props);
   const finalProps = {};
@@ -55,7 +56,7 @@ export default function filter(mapper) {
     children && isFn(children) && children(rest);
 
   const reducer = (Component, key, index) => {
-    const { allowedProps, options } = mapper[key];
+    const { allowedProps, mapProps, options } = mapper[key];
 
     // eslint-disable-next-line react/prop-types
     const NewComponent = ({ children, ...rest }) => (
@@ -64,6 +65,7 @@ export default function filter(mapper) {
           const propsToPass = filterProps({
             props: rest,
             allowedProps,
+            mapProps,
             options: options || {},
           });
 

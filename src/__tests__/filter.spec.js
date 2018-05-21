@@ -5,13 +5,15 @@ import TestRenderer from 'react-test-renderer';
 import filter from '../filter';
 
 const IronMan = ({ ironManName }) => <p>{`I'm ${ironManName}`}</p>;
+
 IronMan.propTypes = {
   ironManName: PropTypes.string.isRequired,
 };
 
 const CamptainAmerica = ({ captainAmericaName }) => (
-  <p>{`My name ${captainAmericaName}`}</p>
+  <p>{`My name is ${captainAmericaName}`}</p>
 );
+
 CamptainAmerica.propTypes = {
   captainAmericaName: PropTypes.string.isRequired,
 };
@@ -112,21 +114,17 @@ describe('filter', () => {
     const Filter = filter({
       ironMan: {
         allowedProps: Object.keys(IronMan.propTypes),
-        options: {
-          mapProps: {
-            nameOfIronMan: ({ value }) => ({
-              propName: 'ironManName',
-              value: `${value} !`,
-            }),
-          },
+        mapProps: {
+          nameOfIronMan: ({ value }) => ({
+            propName: 'ironManName',
+            value: `${value} !`,
+          }),
         },
       },
       captainAmerica: {
         allowedProps: Object.keys(CamptainAmerica.propTypes),
-        options: {
-          mapProps: {
-            nameOfCaptainAmerica: 'captainAmericaName',
-          },
+        mapProps: {
+          nameOfCaptainAmerica: 'captainAmericaName',
         },
       },
     });
@@ -160,6 +158,61 @@ describe('filter', () => {
     });
     expect(testInstance.findByType(CamptainAmerica).props).toEqual({
       captainAmericaName: 'Steve Rogers',
+    });
+  });
+
+  it('should work with option mapProps when components have same props name', () => {
+    const Hulk = ({ name }) => <p>{`I'm ${name}`}</p>;
+
+    Hulk.propTypes = {
+      name: PropTypes.string.isRequired,
+    };
+
+    const Thor = ({ name }) => <p>{`My name is ${name}`}</p>;
+
+    Thor.propTypes = {
+      name: PropTypes.string.isRequired,
+    };
+
+    const Filter = filter({
+      hulk: {
+        allowedProps: Object.keys(Hulk.propTypes),
+        mapProps: {
+          hulkName: Object.keys(Hulk.propTypes)[0],
+        },
+      },
+      thor: {
+        allowedProps: Object.keys(Thor.propTypes),
+        mapProps: {
+          thorName: Object.keys(Thor.propTypes)[0],
+        },
+      },
+    });
+
+    const Avengers = props => (
+      <Filter {...props}>
+        {({ hulk, thor }) => (
+          <div>
+            <Hulk {...hulk} />
+            <Thor {...thor} />
+          </div>
+        )}
+      </Filter>
+    );
+    const testRenderer = TestRenderer.create(
+      <Avengers hulkName="Bruce Banner" thorName="Thor Odinson" />
+    );
+    const testInstance = testRenderer.root;
+
+    expect(testInstance.props).toEqual({
+      thorName: 'Thor Odinson',
+      hulkName: 'Bruce Banner',
+    });
+    expect(testInstance.findByType(Hulk).props).toEqual({
+      name: 'Bruce Banner',
+    });
+    expect(testInstance.findByType(Thor).props).toEqual({
+      name: 'Thor Odinson',
     });
   });
 });

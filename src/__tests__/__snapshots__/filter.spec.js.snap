@@ -6,7 +6,7 @@ exports[`filter should work 1`] = `
     I'm Tony Stark
   </p>
   <p>
-    My name Steve Rogers
+    My name is Steve Rogers
   </p>
 </div>
 `;
