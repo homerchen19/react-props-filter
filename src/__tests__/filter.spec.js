@@ -18,6 +18,8 @@ CamptainAmerica.propTypes = {
   captainAmericaName: PropTypes.string.isRequired,
 };
 
+const All = props => <p>{JSON.stringify(props)}</p>;
+
 describe('filter', () => {
   it('should work', () => {
     const Filter = filter({
@@ -31,10 +33,11 @@ describe('filter', () => {
 
     const Avengers = props => (
       <Filter {...props}>
-        {({ ironMan, captainAmerica }) => (
+        {({ ironMan, captainAmerica, all }) => (
           <div>
             <IronMan {...ironMan} />
             <CamptainAmerica {...captainAmerica} />
+            <All {...all} />
           </div>
         )}
       </Filter>
@@ -57,6 +60,11 @@ describe('filter', () => {
     expect(testInstance.findByType(CamptainAmerica).props).toEqual({
       captainAmericaName: 'Steve Rogers',
     });
+    expect(testInstance.findByType(All).props).toEqual({
+      ironManName: 'Tony Stark',
+      captainAmericaName: 'Steve Rogers',
+      hulkName: 'Bruce Banner',
+    });
   });
 
   it('should work with option DOMProps', () => {
@@ -74,10 +82,11 @@ describe('filter', () => {
 
     const Avengers = props => (
       <Filter {...props}>
-        {({ ironMan, captainAmerica }) => (
+        {({ ironMan, captainAmerica, all }) => (
           <div>
             <IronMan {...ironMan} />
             <CamptainAmerica {...captainAmerica} />
+            <All {...all} />
           </div>
         )}
       </Filter>
@@ -108,6 +117,12 @@ describe('filter', () => {
     expect(testInstance.findByType(CamptainAmerica).props).toEqual({
       captainAmericaName: 'Steve Rogers',
     });
+    expect(testInstance.findByType(All).props).toEqual({
+      ironManName: 'Tony Stark',
+      captainAmericaName: 'Steve Rogers',
+      hulkName: 'Bruce Banner',
+      onClick: handleClickIromMan,
+    });
   });
 
   it('should work with option mapProps', () => {
@@ -131,10 +146,11 @@ describe('filter', () => {
 
     const Avengers = props => (
       <Filter {...props}>
-        {({ ironMan, captainAmerica }) => (
+        {({ ironMan, captainAmerica, all }) => (
           <div>
             <IronMan {...ironMan} />
             <CamptainAmerica {...captainAmerica} />
+            <All {...all} />
           </div>
         )}
       </Filter>
@@ -158,6 +174,11 @@ describe('filter', () => {
     });
     expect(testInstance.findByType(CamptainAmerica).props).toEqual({
       captainAmericaName: 'Steve Rogers',
+    });
+    expect(testInstance.findByType(All).props).toEqual({
+      nameOfIronMan: 'Tony Stark',
+      nameOfCaptainAmerica: 'Steve Rogers',
+      hulkName: 'Bruce Banner',
     });
   });
 
@@ -191,28 +212,35 @@ describe('filter', () => {
 
     const Avengers = props => (
       <Filter {...props}>
-        {({ hulk, thor }) => (
+        {({ hulk, thor, all }) => (
           <div>
             <Hulk {...hulk} />
             <Thor {...thor} />
+            <All {...all} />
           </div>
         )}
       </Filter>
     );
     const testRenderer = TestRenderer.create(
-      <Avengers hulkName="Bruce Banner" thorName="Thor Odinson" />
+      <Avengers hulkName="Bruce Banner" thorName="Thor Odinson" name="name" />
     );
     const testInstance = testRenderer.root;
 
     expect(testInstance.props).toEqual({
       thorName: 'Thor Odinson',
       hulkName: 'Bruce Banner',
+      name: 'name',
     });
     expect(testInstance.findByType(Hulk).props).toEqual({
       name: 'Bruce Banner',
     });
     expect(testInstance.findByType(Thor).props).toEqual({
       name: 'Thor Odinson',
+    });
+    expect(testInstance.findByType(All).props).toEqual({
+      thorName: 'Thor Odinson',
+      hulkName: 'Bruce Banner',
+      name: 'name',
     });
   });
 });

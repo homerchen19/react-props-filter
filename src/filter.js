@@ -23,18 +23,10 @@ const filterProps = ({
         });
 
         originalProps[newPropName] = newValue;
-
-        if (propName !== newPropName) {
-          delete originalProps[propName];
-        }
       } else if (R.type(value) === 'String' && value !== '') {
         const newPropName = value;
 
         originalProps[newPropName] = originalProps[propName];
-
-        if (propName !== newPropName) {
-          delete originalProps[propName];
-        }
       }
     }, mapProps);
   }
@@ -77,7 +69,6 @@ export default function filter(mapper) {
                 }
               : {
                   ...props,
-                  all: { ...rest },
                   [key]: propsToPass,
                 }
           );

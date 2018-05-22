@@ -8,5 +8,8 @@ exports[`filter should work 1`] = `
   <p>
     My name is Steve Rogers
   </p>
+  <p>
+    {"ironManName":"Tony Stark","captainAmericaName":"Steve Rogers","hulkName":"Bruce Banner"}
+  </p>
 </div>
 `;
