@@ -26,30 +26,24 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import filter from 'react-props-filter';
 
-const Hulk = ({ name }) => <p>{`I'm ${name}`}</p>;
+const Hulk = ({ hulkName }) => <p>{`I'm ${hulkName}`}</p>;
 
 Hulk.propTypes = {
-  name: PropTypes.string.isRequired,
+  hulkName: PropTypes.string.isRequired,
 };
 
-const Thor = ({ name }) => <p>{`My name is ${name}`}</p>;
+const Thor = ({ thorName }) => <p>{`My name is ${thorName}`}</p>;
 
 Thor.propTypes = {
-  name: PropTypes.string.isRequired,
+  thorName: PropTypes.string.isRequired,
 };
 
 const Avengers = filter({
   hulk: {
     requiredProps: Object.keys(Hulk.propTypes),
-    mapProps: {
-      hulkName: Object.keys(Hulk.propTypes)[0], // 'name'
-    },
   },
   thor: {
     requiredProps: Object.keys(Thor.propTypes),
-    mapProps: {
-      thorName: Object.keys(Thor.propTypes)[0], // 'name'
-    },
   },
 });
 
@@ -65,9 +59,9 @@ const App = () => (
         <Hulk {...hulk} />
         <Thor {...thor} />
         /*
-          {...hulk} === { name: "Bruce Banner" }
-          {...thor} === { name: "Thor Odinson" }
-          { ...allProps } === {
+          hulk === { hulkName: "Bruce Banner" }
+          thor === { thorName: "Thor Odinson" }
+          allProps === {
             ironManName: 'Tony Stark',
             captainAmericaName: 'Steve Rogers',
             hulkName: 'Bruce Banner',
@@ -93,9 +87,9 @@ The main method to create Filter component.
 
 #### settings: `Object`
 
-This contains several **props group**s, and each group will be injected into render props.
+This contains several **group**s, and each group will be injected into render props.
 
-**Notice**: all original props will be stored in prop **allProps**.
+**Notice**: all original props will be stored in the prop named **allProps**.
 
 For example
 
@@ -107,12 +101,12 @@ const Filter = filter({
 
 const App = props => (
   <Filter { ...props }>
-    {({ groupA, groupB, allProps }) => /* ... */ }
+    {({ groupA, groupB, allProps }) => (/* ... */) }
   </Filter>
 )
 ```
 
-#### Props Group: `Object`
+#### Group: `Object`
 
 Declare what props does Component need.
 It has the following keys.
@@ -123,45 +117,49 @@ It has the following keys.
 
 ##### `requiredProps`: `[String]`
 
-###### Default: `[]`
+List which props are required in this group. It's suggested to be `Object.keys(Component.propTypes)`.
 
-###### Description:
+##### `mapProps`: `Function(props)` => `Object`
 
-List of props which is included in this props group. It's suggested to be `Object.keys(Component.propTypes)`.
+A function which lets you map the original props into a single object. All changes will be kept in group scope.
 
-##### `mapProps`: `Object`
+#### `options`: `Object`
 
-###### Default: `null`
+| Key      |  Type  | Default | Description                                                                                                                                                         |
+| :------- | :----: | :-----: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| DOMProps | `Bool` | `false` | Allowed any [default DOM props](https://github.com/xxhomey19/react-props-filter/blob/master/src/utils/DOMProps.js) from original props to be included in the group. |
 
-###### Description:
-
-An Object which lets you rename specific origianal props or reassign its value.
-
-The key should be **one of original props keys**.  
-The value could be `String` or `Function({ propKey, value })`. Notice that function should return object with keys `propKey` and `value`.
-
-**For example**
+**Example for detailed settings**
 
 ```js
 const Filter = filter({
   groupA: {
-    requiredProps: ["propAAA", "propBBB"], // groupA requires props 'propAAA' and 'propBBB'
-    mapProps: {
-      propA: "propAAA", // Rename prop `propA` to `propAAA`.
-      propB: ({ propKey, value }) => ({
-        propKey: `${propKey}BB`, // Rename prop `propB` to `propBBB`.
-        value: `new ${value}` // Reassign value to prop `propBBB`.
-      })
+    requiredProps: ['propAAA', 'propBBB', 'onClick'],
+    mapProps: props => ({
+      ...props,
+      propAAA: props.propA,
+      propBBB: `${props.propB} !`,
+    }),
+    options: {
+      DOMProps: true,
     }
-  }
+  },
 });
+
+const App = () => (
+  <Filter propA="A" propB="B" onClick={console.log}>
+    {({groupA}) => (/* ... */)
+    /*
+      groupA === {
+        propAAA: 'A',
+        propBBB: 'B !',
+        onClick=console.log
+      }
+    */
+  }
+  </Filter>
+)
 ```
-
-#### `options`: `Object`
-
-| Key      |  Type  | Default | Description                                                                                                                                                               |
-| :------- | :----: | :-----: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| DOMProps | `Bool` | `false` | Allowed any [default DOM props](https://github.com/xxhomey19/react-props-filter/blob/master/src/utils/DOMProps.js) from original props to be included in the props group. |
 
 ## License
 

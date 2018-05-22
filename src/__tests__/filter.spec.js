@@ -129,18 +129,15 @@ describe('filter', () => {
     const Filter = filter({
       ironMan: {
         requiredProps: Object.keys(IronMan.propTypes),
-        mapProps: {
-          nameOfIronMan: ({ value }) => ({
-            propKey: 'ironManName',
-            value: `${value} !`,
-          }),
-        },
+        mapProps: ({ nameOfIronMan }) => ({
+          ironManName: `${nameOfIronMan} !`,
+        }),
       },
       captainAmerica: {
         requiredProps: Object.keys(CamptainAmerica.propTypes),
-        mapProps: {
-          nameOfCaptainAmerica: 'captainAmericaName',
-        },
+        mapProps: ({ nameOfCaptainAmerica }) => ({
+          captainAmericaName: nameOfCaptainAmerica,
+        }),
       },
     });
 
@@ -198,15 +195,15 @@ describe('filter', () => {
     const Filter = filter({
       hulk: {
         requiredProps: Object.keys(Hulk.propTypes),
-        mapProps: {
-          hulkName: Object.keys(Hulk.propTypes)[0],
-        },
+        mapProps: ({ hulkName }) => ({
+          name: hulkName,
+        }),
       },
       thor: {
         requiredProps: Object.keys(Thor.propTypes),
-        mapProps: {
-          thorName: Object.keys(Thor.propTypes)[0],
-        },
+        mapProps: ({ thorName }) => ({
+          name: thorName,
+        }),
       },
     });
 

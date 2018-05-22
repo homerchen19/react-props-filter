@@ -11,24 +11,11 @@ const filterProps = ({
   mapProps = null,
   options: { DOMProps = false },
 }) => {
-  const originalProps = R.clone(props);
+  let originalProps = R.clone(props);
   const finalProps = {};
 
-  if (mapProps && R.type(mapProps) === 'Object') {
-    R.forEachObjIndexed((value, propKey) => {
-      if (isFn(value)) {
-        const { propKey: newPropName, value: newValue } = value({
-          propKey,
-          value: originalProps[propKey],
-        });
-
-        originalProps[newPropName] = newValue;
-      } else if (R.type(value) === 'String' && value !== '') {
-        const newPropName = value;
-
-        originalProps[newPropName] = originalProps[propKey];
-      }
-    }, mapProps);
+  if (mapProps && R.type(mapProps) === 'Function') {
+    originalProps = mapProps(props);
   }
 
   R.forEachObjIndexed((value, key) => {
