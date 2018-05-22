@@ -24,20 +24,20 @@ describe('filter', () => {
   it('should work', () => {
     const Filter = filter({
       ironMan: {
-        allowedProps: Object.keys(IronMan.propTypes),
+        requiredProps: Object.keys(IronMan.propTypes),
       },
       captainAmerica: {
-        allowedProps: Object.keys(CamptainAmerica.propTypes),
+        requiredProps: Object.keys(CamptainAmerica.propTypes),
       },
     });
 
     const Avengers = props => (
       <Filter {...props}>
-        {({ ironMan, captainAmerica, all }) => (
+        {({ ironMan, captainAmerica, allProps }) => (
           <div>
             <IronMan {...ironMan} />
             <CamptainAmerica {...captainAmerica} />
-            <All {...all} />
+            <All {...allProps} />
           </div>
         )}
       </Filter>
@@ -70,23 +70,23 @@ describe('filter', () => {
   it('should work with option DOMProps', () => {
     const Filter = filter({
       ironMan: {
-        allowedProps: Object.keys(IronMan.propTypes),
+        requiredProps: Object.keys(IronMan.propTypes),
         options: {
           DOMProps: true,
         },
       },
       captainAmerica: {
-        allowedProps: Object.keys(CamptainAmerica.propTypes),
+        requiredProps: Object.keys(CamptainAmerica.propTypes),
       },
     });
 
     const Avengers = props => (
       <Filter {...props}>
-        {({ ironMan, captainAmerica, all }) => (
+        {({ ironMan, captainAmerica, allProps }) => (
           <div>
             <IronMan {...ironMan} />
             <CamptainAmerica {...captainAmerica} />
-            <All {...all} />
+            <All {...allProps} />
           </div>
         )}
       </Filter>
@@ -128,16 +128,16 @@ describe('filter', () => {
   it('should work with option mapProps', () => {
     const Filter = filter({
       ironMan: {
-        allowedProps: Object.keys(IronMan.propTypes),
+        requiredProps: Object.keys(IronMan.propTypes),
         mapProps: {
           nameOfIronMan: ({ value }) => ({
-            propName: 'ironManName',
+            propKey: 'ironManName',
             value: `${value} !`,
           }),
         },
       },
       captainAmerica: {
-        allowedProps: Object.keys(CamptainAmerica.propTypes),
+        requiredProps: Object.keys(CamptainAmerica.propTypes),
         mapProps: {
           nameOfCaptainAmerica: 'captainAmericaName',
         },
@@ -146,11 +146,11 @@ describe('filter', () => {
 
     const Avengers = props => (
       <Filter {...props}>
-        {({ ironMan, captainAmerica, all }) => (
+        {({ ironMan, captainAmerica, allProps }) => (
           <div>
             <IronMan {...ironMan} />
             <CamptainAmerica {...captainAmerica} />
-            <All {...all} />
+            <All {...allProps} />
           </div>
         )}
       </Filter>
@@ -197,13 +197,13 @@ describe('filter', () => {
 
     const Filter = filter({
       hulk: {
-        allowedProps: Object.keys(Hulk.propTypes),
+        requiredProps: Object.keys(Hulk.propTypes),
         mapProps: {
           hulkName: Object.keys(Hulk.propTypes)[0],
         },
       },
       thor: {
-        allowedProps: Object.keys(Thor.propTypes),
+        requiredProps: Object.keys(Thor.propTypes),
         mapProps: {
           thorName: Object.keys(Thor.propTypes)[0],
         },
@@ -212,11 +212,11 @@ describe('filter', () => {
 
     const Avengers = props => (
       <Filter {...props}>
-        {({ hulk, thor, all }) => (
+        {({ hulk, thor, allProps }) => (
           <div>
             <Hulk {...hulk} />
             <Thor {...thor} />
-            <All {...all} />
+            <All {...allProps} />
           </div>
         )}
       </Filter>

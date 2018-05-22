@@ -7,7 +7,7 @@ const isFn = val => R.equals(R.type(val), 'Function');
 
 const filterProps = ({
   props,
-  allowedProps = [],
+  requiredProps = [],
   mapProps = null,
   options: { DOMProps = false },
 }) => {
@@ -15,18 +15,18 @@ const filterProps = ({
   const finalProps = {};
 
   if (mapProps && R.type(mapProps) === 'Object') {
-    R.forEachObjIndexed((value, propName) => {
+    R.forEachObjIndexed((value, propKey) => {
       if (isFn(value)) {
-        const { propName: newPropName, value: newValue } = value({
-          propName,
-          value: originalProps[propName],
+        const { propKey: newPropName, value: newValue } = value({
+          propKey,
+          value: originalProps[propKey],
         });
 
         originalProps[newPropName] = newValue;
       } else if (R.type(value) === 'String' && value !== '') {
         const newPropName = value;
 
-        originalProps[newPropName] = originalProps[propName];
+        originalProps[newPropName] = originalProps[propKey];
       }
     }, mapProps);
   }
@@ -34,7 +34,7 @@ const filterProps = ({
   R.forEachObjIndexed((value, key) => {
     if (
       (DOMProps && R.contains(key, allDOMProps)) ||
-      R.contains(key, allowedProps)
+      R.contains(key, requiredProps)
     ) {
       finalProps[key] = value;
     }
@@ -48,7 +48,7 @@ export default function filter(mapper) {
     children && isFn(children) && children(rest);
 
   const reducer = (Component, key, index) => {
-    const { allowedProps, mapProps, options } = mapper[key];
+    const { requiredProps, mapProps, options } = mapper[key];
 
     // eslint-disable-next-line react/prop-types
     const NewComponent = ({ children, ...rest }) => (
@@ -56,7 +56,7 @@ export default function filter(mapper) {
         {props => {
           const propsToPass = filterProps({
             props: rest,
-            allowedProps,
+            requiredProps,
             mapProps,
             options: options || {},
           });
@@ -64,7 +64,7 @@ export default function filter(mapper) {
           return children(
             index === 0
               ? {
-                  all: { ...rest },
+                  allProps: { ...rest },
                   [key]: propsToPass,
                 }
               : {
