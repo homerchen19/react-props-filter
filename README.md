@@ -21,6 +21,8 @@ $ npm i react-props-filter
 
 ## 🕹 Usage
 
+[![Edit 32m15nzo7p](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/32m15nzo7p)
+
 ```js
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -59,8 +61,8 @@ const App = () => (
         <Hulk {...hulk} />
         <Thor {...thor} />
         /*
-          hulk === { hulkName: "Bruce Banner" }
-          thor === { thorName: "Thor Odinson" }
+          hulk === { hulkName: 'Bruce Banner' }
+          thor === { thorName: 'Thor Odinson' }
           allProps === {
             ironManName: 'Tony Stark',
             captainAmericaName: 'Steve Rogers',
@@ -147,13 +149,13 @@ const Filter = filter({
 });
 
 const App = () => (
-  <Filter propA="A" propB="B" onClick={console.log}>
-    {({groupA}) => (/* ... */)
+  <Filter propA="A" propB="B" propC="C" onClick={console.log}>
+    {({ groupA }) => (/* ... */)
     /*
       groupA === {
         propAAA: 'A',
         propBBB: 'B !',
-        onClick=console.log
+        onClick: console.log
       }
     */
   }
